@@ -1,22 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ThAmCo.Profile.Data;
 using ThAmCo.Profile.Data.Entities;
 using ThAmCo.Profile.Interfaces;
 using ThAmCo.Profile.Models.Profile;
+using ThAmCo.Profile.ViewModels;
 
 namespace ThAmCo.Profile.Repositories
 {
     public class ProfileRepository : IProfileRepository
     {
         private readonly ProfileDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ProfileRepository(ProfileDbContext context)
+        public ProfileRepository(ProfileDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<IList<ProfileViewModel>> GetProfiles()
+        {
+            var profiles = await _context.Profiles.Include(x => x.Addresses).ToListAsync();
+
+            var mappedProfiles = profiles.Select(p => _mapper.Map<ProfileViewModel>(p)).ToList();
+
+            return mappedProfiles;
+        }
+
+        public async Task<ProfileViewModel> GetProfile(Guid id)
+        {
+            var profile = await _context.Profiles.Include(x => x.Addresses).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (profile == null)
+                return null;
+
+            var mappedProfile = _mapper.Map<ProfileViewModel>(profile);
+
+            return mappedProfile;
         }
 
         public async Task AddProfile(ProfileDto profile)
@@ -44,11 +69,11 @@ namespace ThAmCo.Profile.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateProfile(ProfileDto profile)
+        public async Task<ProfileViewModel> UpdateProfile(ProfileDto profile)
         {
             var profileToUpdate = await _context.Profiles.FindAsync(profile.Id);
             if (profileToUpdate == null)
-                return;
+                return null;
 
             if (profile.Username != null && profileToUpdate.Username != profile.Username)
                 profileToUpdate.Username = profile.Username;
@@ -63,6 +88,10 @@ namespace ThAmCo.Profile.Repositories
                 profileToUpdate.Surname = profile.Surname;
 
             await _context.SaveChangesAsync();
+
+            var mappedProfile = _mapper.Map<ProfileViewModel>(profileToUpdate);
+
+            return mappedProfile;
         }
     }
 }

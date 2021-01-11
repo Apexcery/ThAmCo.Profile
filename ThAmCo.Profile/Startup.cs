@@ -1,4 +1,5 @@
 using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ThAmCo.Profile.Data;
 using ThAmCo.Profile.Interfaces;
+using ThAmCo.Profile.Mapper;
 using ThAmCo.Profile.Repositories;
 using ThAmCo.Profile.Services.Accounts;
 using ThAmCo.Profile.Services.Orders;
@@ -30,6 +32,10 @@ namespace ThAmCo.Profile
             {
                 options.UseMySql(Configuration.GetConnectionString("ProfileDbConnectionString"));
             });
+
+            services.AddSwaggerGen();
+
+            services.AddAutoMapper(typeof(ProfileMapper));
 
             if (Env.IsDevelopment())
             {
@@ -58,6 +64,13 @@ namespace ThAmCo.Profile
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ThAmCo Profile API");
+            });
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

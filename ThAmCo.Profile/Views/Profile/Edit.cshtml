@@ -1,0 +1,77 @@
+﻿@model ThAmCo.Profile.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Profile</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Forename" class="control-label"></label>
+                <input asp-for="Forename" class="form-control" />
+                <span asp-validation-for="Forename" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Surname" class="control-label"></label>
+                <input asp-for="Surname" class="form-control" />
+                <span asp-validation-for="Surname" class="text-danger"></span>
+            </div>
+            
+            <h3>Addresses <a data-toggle="modal" data-target="#addAddressModal"><span style="color: limegreen; cursor: pointer">+</span></a></h3>
+            @foreach (var address in Model.Addresses)
+            {
+                @Html.HiddenFor(_ => address.Id)
+                <div class="form-group">
+                    @Html.LabelFor(_ => address.AddressLine1)
+                    @Html.TextBoxFor(_ => address.AddressLine1)
+                    @Html.ValidationMessageFor(_ => address.AddressLine1)
+                </div>
+            }
+
+            <div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addAddressModalLabel">Add Address</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-5">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
