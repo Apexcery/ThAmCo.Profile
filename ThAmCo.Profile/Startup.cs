@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ThAmCo.Profile.Data;
 using ThAmCo.Profile.Interfaces;
+using ThAmCo.Profile.Repositories;
+using ThAmCo.Profile.Services.Accounts;
 using ThAmCo.Profile.Services.Orders;
 
 namespace ThAmCo.Profile
@@ -25,13 +28,21 @@ namespace ThAmCo.Profile
         {
             services.AddDbContext<ProfileDbContext>(options =>
             {
-                options.UseMySQL(Configuration.GetConnectionString("ProfileDbConnectionString"));
+                options.UseMySql(Configuration.GetConnectionString("ProfileDbConnectionString"));
             });
 
             if (Env.IsDevelopment())
+            {
                 services.AddSingleton<IOrdersService, MockOrdersService>();
+                services.AddSingleton<IAccountsService, MockAccountsService>();
+                services.AddSingleton<IProfileRepository, MockProfileRepository>();
+            }
             else
-                services.AddSingleton<IOrdersService, OrdersService>();
+            {
+                services.AddScoped<IOrdersService, OrdersService>();
+                services.AddHttpClient<IAccountsService, AccountsService>(options => options.BaseAddress = new Uri(Configuration["AppSettings:Endpoints:AccountsEndpoint"]));
+                services.AddScoped<IProfileRepository, ProfileRepository>();
+            }
 
             services.AddControllersWithViews();
         }
