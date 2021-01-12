@@ -46,7 +46,7 @@ namespace ThAmCo.Profile
             else
             {
                 services.AddScoped<IOrdersService, OrdersService>();
-                services.AddHttpClient<IAccountsService, AccountsService>(options => options.BaseAddress = new Uri(Configuration["AppSettings:Endpoints:AccountsEndpoint"]));
+                services.AddHttpClient<IAccountsService, AccountsService>(options => options.BaseAddress = new Uri($"{Configuration["AppSettings:Endpoints:AccountsEndpoint"]}/api/account/"));
                 services.AddScoped<IProfileRepository, ProfileRepository>();
             }
 
@@ -82,7 +82,7 @@ namespace ThAmCo.Profile
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Profile}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
