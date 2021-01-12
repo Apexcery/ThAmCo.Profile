@@ -35,6 +35,10 @@ namespace ThAmCo.Profile.Controllers.WebApp
         // GET: Profile/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
+            var isCookieStored = Request.Cookies.TryGetValue("access_token", out _);
+            if (!isCookieStored)
+                return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
+
             if (id == null)
             {
                 return NotFound();
@@ -52,6 +56,10 @@ namespace ThAmCo.Profile.Controllers.WebApp
         // GET: Profile/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
+            var isCookieStored = Request.Cookies.TryGetValue("access_token", out _);
+            if (!isCookieStored)
+                return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
+
             if (id == null)
             {
                 return NotFound();
@@ -70,6 +78,10 @@ namespace ThAmCo.Profile.Controllers.WebApp
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Username,Email,Forename,Surname")] ProfileEntity profileEntity)
         {
+            var isCookieStored = Request.Cookies.TryGetValue("access_token", out _);
+            if (!isCookieStored)
+                return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
+
             if (id != profileEntity.Id)
             {
                 return NotFound();
