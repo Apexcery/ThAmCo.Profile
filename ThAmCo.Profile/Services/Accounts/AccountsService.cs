@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using ThAmCo.Profile.Interfaces;
 using ThAmCo.Profile.Models;
@@ -14,6 +15,18 @@ namespace ThAmCo.Profile.Services.Accounts
         public AccountsService(HttpClient client)
         {
             _client = client;
+        }
+
+        public async Task<string> GetCurrentAccountId(string accessToken)
+        {
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, _client.BaseAddress + "me");
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var response = await _client.SendAsync(requestMessage);
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            return await response.Content.ReadAsStringAsync();
         }
 
         public async Task<Account> GetAccountDetails(Guid profileId)

@@ -7,6 +7,7 @@ namespace ThAmCo.Profile.Interfaces
 {
     public interface IAccountsService
     {
+        public Task<string> GetCurrentAccountId(string accessToken);
         public Task<Account> GetAccountDetails(Guid profileId);
         public Task<IEnumerable<Account>> GetMultipleAccounts(int? limit);
     }

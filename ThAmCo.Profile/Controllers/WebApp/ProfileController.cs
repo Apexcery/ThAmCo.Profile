@@ -12,24 +12,30 @@ namespace ThAmCo.Profile.Controllers.WebApp
     public class ProfileController : Controller
     {
         private readonly IProfileRepository _profileRepository;
+        private readonly IAccountsService _accountsService;
         private readonly IConfiguration _config;
 
-        public ProfileController(ProfileDbContext context, IProfileRepository profileRepository, IConfiguration config)
+        public ProfileController(ProfileDbContext context, IProfileRepository profileRepository, IAccountsService accountsService, IConfiguration config)
         {
             _profileRepository = profileRepository;
+            _accountsService = accountsService;
             _config = config;
         }
 
         // GET: Profile
         public async Task<IActionResult> Index()
         {
-            var isCookieStored = Request.Cookies.TryGetValue("access_token", out _);
+            var isCookieStored = Request.Cookies.TryGetValue("access_token", out var accessToken);
             if (!isCookieStored)
                 return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
 
-            var profiles = await _profileRepository.GetProfiles();
+            var currentId = await _accountsService.GetCurrentAccountId(accessToken);
+            if (currentId == null)
+                return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
 
-            return View(profiles);
+            var profile = await _profileRepository.GetProfile(Guid.Parse(currentId));
+
+            return View(profile);
         }
 
         // GET: Profile/Details/5
