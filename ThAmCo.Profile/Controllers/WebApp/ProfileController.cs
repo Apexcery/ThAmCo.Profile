@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using ThAmCo.Profile.Data;
 using ThAmCo.Profile.Data.Entities;
 using ThAmCo.Profile.Interfaces;
@@ -11,15 +12,21 @@ namespace ThAmCo.Profile.Controllers.WebApp
     public class ProfileController : Controller
     {
         private readonly IProfileRepository _profileRepository;
+        private readonly IConfiguration _config;
 
-        public ProfileController(ProfileDbContext context, IProfileRepository profileRepository)
+        public ProfileController(ProfileDbContext context, IProfileRepository profileRepository, IConfiguration config)
         {
             _profileRepository = profileRepository;
+            _config = config;
         }
 
         // GET: Profile
         public async Task<IActionResult> Index()
         {
+            var isCookieStored = Request.Cookies.TryGetValue("access_token", out _);
+            if (!isCookieStored)
+                return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
+
             var profiles = await _profileRepository.GetProfiles();
 
             return View(profiles);
