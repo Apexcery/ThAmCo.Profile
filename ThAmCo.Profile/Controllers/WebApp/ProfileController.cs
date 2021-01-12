@@ -26,24 +26,25 @@ namespace ThAmCo.Profile.Controllers.WebApp
         public async Task<IActionResult> Index()
         {
             var isCookieStored = Request.Cookies.TryGetValue("access_token", out var accessToken);
-            if (!isCookieStored)
-                return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
+            // if (!isCookieStored)
+            //     return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
 
-            var currentId = await _accountsService.GetCurrentAccountId(accessToken);
-            if (currentId == null)
-                return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
+            // var currentId = await _accountsService.GetCurrentAccountId(accessToken);
+            // if (currentId == null)
+            //     return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
 
-            var profile = await _profileRepository.GetProfile(Guid.Parse(currentId));
+            var profiles = await _profileRepository.GetProfiles();
+            // var profile = await _profileRepository.GetProfile(Guid.Parse(currentId));
 
-            return View(profile);
+            return View(profiles);
         }
 
         // GET: Profile/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             var isCookieStored = Request.Cookies.TryGetValue("access_token", out _);
-            if (!isCookieStored)
-                return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
+            // if (!isCookieStored)
+            //     return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
 
             if (id == null)
             {
@@ -63,8 +64,8 @@ namespace ThAmCo.Profile.Controllers.WebApp
         public async Task<IActionResult> Edit(Guid? id)
         {
             var isCookieStored = Request.Cookies.TryGetValue("access_token", out _);
-            if (!isCookieStored)
-                return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
+            // if (!isCookieStored)
+            //     return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
 
             if (id == null)
             {
@@ -85,8 +86,8 @@ namespace ThAmCo.Profile.Controllers.WebApp
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Username,Email,Forename,Surname")] ProfileEntity profileEntity)
         {
             var isCookieStored = Request.Cookies.TryGetValue("access_token", out _);
-            if (!isCookieStored)
-                return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
+            // if (!isCookieStored)
+            //     return Redirect($"{_config["AppSettings:Endpoints:AccountsEndpoint"]}/Auth");
 
             if (id != profileEntity.Id)
             {

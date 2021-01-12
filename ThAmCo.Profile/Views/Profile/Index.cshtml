@@ -1,4 +1,4 @@
-﻿@model ThAmCo.Profile.ViewModels.ProfileViewModel
+﻿@model IEnumerable<ThAmCo.Profile.ViewModels.ProfileViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -28,27 +28,29 @@
         </tr>
     </thead>
     <tbody>
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => modelItem.Username)
+                @Html.DisplayFor(modelItem => item.Username)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => modelItem.Email)
+                @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => modelItem.Forename)
+                @Html.DisplayFor(modelItem => item.Forename)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => modelItem.Surname)
+                @Html.DisplayFor(modelItem => item.Surname)
             </td>
             <td>
-                @Model.Addresses.Count
+                @item.Addresses.Count
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@Model.Id">Details</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
