@@ -40,6 +40,11 @@ namespace ThAmCo.Profile.Services.Accounts
             }
         };
 
+        public async Task<string> GetCurrentAccountId(string accessToken)
+        {
+            return Accounts[0].Id;
+        }
+
         public async Task<Account> GetAccountDetails(Guid profileId)
         {
             var accountDetails = Accounts.FirstOrDefault(x => x.Id.Equals(profileId.ToString(), StringComparison.CurrentCultureIgnoreCase));
