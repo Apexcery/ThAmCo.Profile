@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using ThAmCo.Profile.Interfaces;
 using ThAmCo.Profile.Models;
 
-namespace ThAmCo.Profile.Services
+namespace ThAmCo.Profile.Services.Orders
 {
     public class OrdersService : IOrdersService
     {
